@@ -27,3 +27,9 @@ models/weights/
 .idea/
 .DS_Store
 *.log
+
+build/
+*.pyd
+*.so
+*.o
+__pycache__/
