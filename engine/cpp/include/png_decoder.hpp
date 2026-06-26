@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <vector>
 
 namespace engine::vision {
     struct PngInfo {
@@ -9,7 +10,5 @@ namespace engine::vision {
         uint8_t color_type;
     };
 
-    bool verify_png_signature(const char* filename);
-    bool read_png_header(const char* filename, PngInfo& out_info);
-
+    bool load_png_pixels(const char* filename, PngInfo& out_info, std::vector<uint8_t>& out_pixels);
 }
