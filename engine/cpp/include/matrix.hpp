@@ -30,7 +30,6 @@ public:
     // Math Operations
     Matrix transpose();
     Matrix dot(const Matrix& other);
-
 };
 
 class MultiLayerPerceptron{
