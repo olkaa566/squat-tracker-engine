@@ -61,3 +61,6 @@ vcpkg_installed/
 *.mov
 *.avi
 *.mkv
+
+assets/test_image.png
+assets/output_*.png
