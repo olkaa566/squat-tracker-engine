@@ -29,6 +29,7 @@ The manual selection step will be entirely replaced. The system will leverage mo
 Clone the repo and build the standalone C++ engine locally:
 
 ```bash
+cd engine
 mkdir build && cd build
 cmake ..
 cmake --build . --config Release
