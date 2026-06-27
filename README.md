@@ -5,7 +5,6 @@ A high-performance, (soon to be) full-stack application designed to analyze squa
 Currently in the semi-automatic phase (just started 😶😶), in a few months it will be a fully autonomous movement recognition system.
 
 **Vision/Plans**
-
 * **Currently:** 
 User uploads a video, system pauses on the first frame. The user has to manually mark important joints (knee, hip, ankle). Then the system tracks these points frame-by-frame using block-matching algorithms to evaluate the squat.
 
@@ -26,6 +25,7 @@ The manual selection step will be entirely replaced. The system will leverage mo
 * **Database & Storage:** PostgreSQL / Supabase (Handling user kinematics data and video storage)
 
 ⚙️ **How to Build the Core Engine**
+
 Clone the repo and build the standalone C++ engine locally:
 
 ```bash
@@ -36,4 +36,7 @@ cmake --build . --config Release
 
 
 📄 **License**
+
 This project utilizes third-party libraries (such as stb_image for initial I/O testing) licensed under the MIT License. See THIRD-PARTY-NOTICES.txt for details.
+
+![alt text](image.png)
