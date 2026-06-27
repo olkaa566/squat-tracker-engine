@@ -4,7 +4,6 @@ import pybind11
 ext_modules = [
     Extension(
         "cpp_engine", 
-        # Pointing to the new isolated engine_cpp folder
         sources=["engine/cpp/src/matrix.cpp", "engine/cpp/src/bindings.cpp"],
         include_dirs=["engine/cpp/include", pybind11.get_include()],
         language='c++',
