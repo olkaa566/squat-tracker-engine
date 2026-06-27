@@ -15,12 +15,12 @@ The manual selection step will be entirely replaced. The system will leverage mo
 
 **Core Vision Engine:**
 * **Language:** C++17
-* **Image I/O:** `stb_image` (C library for memory-safe image decoding)
+* **Image I/O:** `stb_image` (C library for image decoding)
 * **Build System:** CMake
 * **Python Bindings:** Compiled `.pyd` extensions via Python C-API, only for the current state
 
 **Full-Stack Application (In Progress):**
-* **Frontend:** Flutter (Cross-platform mobile and web UI)
+* **Frontend:** Flutter 
 * **Backend API:** Node.js with TypeScript
 * **Database & Storage:** PostgreSQL / Supabase (Handling user kinematics data and video storage)
 
