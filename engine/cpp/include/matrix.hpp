@@ -25,28 +25,10 @@ public:
         return data[(y * columns) + x];
     }
 
-    std::vector<float> get_data() const;
+   const std::vector<float>& get_data() const;
+   std::vector<float>& get_data();
 
     // Math Operations
     Matrix transpose();
     Matrix dot(const Matrix& other);
-};
-
-class MultiLayerPerceptron{
-private:
-    Matrix weights_hidden;
-    Matrix biases_hidden;
-    Matrix weights_output;
-    Matrix biases_output;
-
-    float learning_rate;
-
-    float sigmoid(float x);
-    float sigmoid_derivative(float x);
-
-public:
-    MultiLayerPerceptron(int input_nodes, int hidden_nodes, int output_nodes, float learning_rate = 0.01f);
-
-    Matrix forward(Matrix& inputs);
-    void train(Matrix& inputs, Matrix& targets);
 };
