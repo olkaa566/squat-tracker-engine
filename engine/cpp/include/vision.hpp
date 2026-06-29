@@ -2,6 +2,7 @@
 #include <array>
 #include "matrix.hpp"
 #include "vision_constants.hpp"
+#include <cstdint>
 
 void convolve(const Matrix& input, const Kernel& kernel, Matrix& ouput);
 Matrix image_to_matrix(const std::vector<uint8_t>& raw_rgb, int width, int height);

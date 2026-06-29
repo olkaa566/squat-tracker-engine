@@ -7,7 +7,7 @@
 namespace engine::vision {
 
 bool load_png_pixels(const char* filename, PngInfo& out_info, std::vector<uint8_t>& out_pixels) {
-    std::cout << "--- Loading Image via stb_image ---" << std::endl;
+    std::cout << "Loading Image via stb_image." << std::endl;
 
     int width, height, channels;
     unsigned char* data = stbi_load(filename, &width, &height, &channels, 3);
@@ -23,18 +23,14 @@ bool load_png_pixels(const char* filename, PngInfo& out_info, std::vector<uint8_
     out_info.color_type = 2; 
 
     size_t total_bytes = width * height * 3;
-    
-    // Safely copy the raw memory into our C++ vector
     out_pixels.assign(data, data + total_bytes);
-
-    // Free the C-style memory block to prevent leaks
     stbi_image_free(data);
 
     std::cout << "Width: " << out_info.width << " px" << std::endl;
     std::cout << "Height: " << out_info.height << " px" << std::endl;
-    std::cout << "Success: Extracted " << out_pixels.size() << " bytes of raw pixel data!" << std::endl;
+    std::cout << "Extracted " << out_pixels.size() << " bytes of raw pixel data." << std::endl;
 
     return true;
 }
 
-} // namespace engine::vision
+} 
