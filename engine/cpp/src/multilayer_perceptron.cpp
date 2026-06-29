@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <cmath> 
 #include "multilayer_perceptron.hpp"
+#include <iostream>
 
 using namespace std;
 
@@ -116,5 +117,45 @@ void MultiLayerPerceptron::train(Matrix& inputs, Matrix& targets) {
 
     for (size_t i = 0; i < b_hidden_data.size(); i++) { 
         b_hidden_data[i] += hidden_gradients_data[i] * learning_rate; 
+    }
+}
+
+float MultiLayerPerceptron::calculate_mse(const Matrix& target, const Matrix& output) const {
+    const std::vector<float>& t_data = target.get_data();
+    const std::vector<float>& o_data = output.get_data();
+    
+    float sum_squared_errors = 0.0f;
+
+    for (size_t i = 0; i < t_data.size(); i++) {
+        float error = t_data[i] - o_data[i];
+        sum_squared_errors += (error * error); 
+    }
+
+    // return the average
+    return sum_squared_errors / t_data.size();
+}
+
+void MultiLayerPerceptron::fit(std::vector<Matrix>& training_data, std::vector<Matrix>& target_data, int epochs) {
+    for (int epoch = 0; epoch < epochs; epoch++) {
+        float total_epoch_loss = 0.0f;
+
+        //iterate through every frame in dataset
+        for (size_t i = 0; i < training_data.size(); i++) {
+            
+            //train network on this frame
+            train(training_data[i], target_data[i]);
+
+            //calculate error for the frame
+            float sample_loss = calculate_mse(target_data[i], output_buffer);
+            total_epoch_loss += sample_loss;
+        }
+
+        //calculate the avg loss for the whole dataset
+        float average_loss = total_epoch_loss / training_data.size();
+
+        //print progress
+        if (epoch % 100 == 0 || epoch == epochs - 1) {
+            cout << "Epoch: " << epoch << " | Loss: " << average_loss << "\n";
+        }
     }
 }

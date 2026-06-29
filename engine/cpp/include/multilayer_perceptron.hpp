@@ -18,10 +18,13 @@ private:
 
     float relu(float x) const;
     float relu_derivative(float x) const;
+    // function to calculate Mean Squared Error
+    float calculate_mse(const Matrix& target, const Matrix& output) const;
 
 public:
     MultiLayerPerceptron(int input_nodes, int hidden_nodes, int output_nodes, float learning_rate = 0.01f);
 
     Matrix& forward(Matrix& inputs);
     void train(Matrix& inputs, Matrix& targets);
+    void fit(std::vector<Matrix>& training_data, std::vector<Matrix>& target_data, int epochs);
 };
