@@ -1,16 +1,22 @@
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+import subprocess 
 
-image = mpimg.imread('assets/test_squat.png')
+img = mpimg.imread('assets/test_squat.png')
 
-plt.imshow(image)
-plt.title("Click on knee, hip, ankle. Middle-click to stop.")
+plt.imshow(img)
+plt.title("Click 3 times: 1. Hip, 2. Knee, 3. Ankle")
+print("Waiting for your clicks.")
 
-print("Waiting for clicks.")
-coordinates = plt.ginput(n =- 1, timeout = 0) 
-
+points = plt.ginput(3) 
 plt.close()
 
-print("\nYou clicked these exact coordinates (X, Y):")
-for point in coordinates:
-    print(point)
+terminal_command = ['.\\eng.exe']
+
+for x, y in points:
+    norm_x = x / img.shape[1]
+    norm_y = y / img.shape[0]
+    terminal_command.append(str(norm_x))
+    terminal_command.append(str(norm_y))
+
+subprocess.run(terminal_command)
