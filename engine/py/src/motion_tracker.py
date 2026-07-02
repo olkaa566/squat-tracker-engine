@@ -29,8 +29,6 @@ if ret:
     cv2.imshow("Video", first_frame)
     
     cv2.setMouseCallback("Video", get_clicks)
-    print("Waiting for you to click: 1. Hip, 2. Knee...")
-    
 
     #wait until 2 clicks
     while len(points) < 2:
@@ -49,9 +47,6 @@ max_hip_y = -1.0
 lowest_hip_x, lowest_hip_y = 0.0, 0.0
 lowest_knee_x, lowest_knee_y = 0.0, 0.0
 height, width = first_frame.shape[:2]
-# -------------------------------------------
-
-print("Clicks captured! Playing video and tracking...")
 
 while True:
     ret, frame = cap.read()
@@ -86,8 +81,6 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
-print("\nVideo finished! Analyzing the deepest point of your squat...")
 
 norm_hip_x = lowest_hip_x / width
 norm_hip_y = lowest_hip_y / height
