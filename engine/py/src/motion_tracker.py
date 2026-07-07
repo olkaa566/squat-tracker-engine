@@ -71,7 +71,6 @@ while True:
         cv2.circle(frame, (int(knee_x), int(knee_y)), 6, (0, 0, 255), -1)
         
         p0 = p1.reshape(-1, 1, 2)
-    # ------------------------------------------
 
     cv2.imshow("Video", frame)
     old_gray = frame_gray.copy()
