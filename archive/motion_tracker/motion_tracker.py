@@ -19,6 +19,9 @@ if not cap.isOpened():
     print("Error: Could not open video file.")
     exit()
 
+fps = cap.get(cv2.CAP_PROP_FPS)
+frame_delay = int(round(1000.0 / fps)) if fps > 0 else 33
+
 cv2.namedWindow("Video", cv2.WINDOW_NORMAL)
 
 ret, first_frame = cap.read()
@@ -75,7 +78,7 @@ while True:
     cv2.imshow("Video", frame)
     old_gray = frame_gray.copy()
 
-    if cv2.waitKey(25) & 0xFF == ord('q'):
+    if cv2.waitKey(frame_delay) & 0xFF == ord('q'):
         break
 
 cap.release()
