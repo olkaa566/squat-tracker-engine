@@ -2,6 +2,8 @@ import sys
 import os
 import cv2
 from ultralytics import YOLO
+import tkinter as tk #in order not to write name of file in code
+from tkinter import filedialog
 
 engine_path = r"C:\Users\ola\squat-depth-nn" 
 sys.path.append(engine_path)
@@ -20,7 +22,22 @@ try:
 except Exception as e:
     print(f"warning: could not load weights: {e}\n")
 
-cap = cv2.VideoCapture("assets/ola_zle.mp4")
+# tkinter window initialization
+root = tk.Tk()
+root.withdraw()
+root.attributes('-topmost', True) 
+
+print("waiting to choose file...")
+video_path = filedialog.askopenfilename(
+    title="choose a file",
+    filetypes=[("Video files", "*.mp4 *.avi *.mov *.mkv"), ("All files", "*.*")]
+)
+
+if not video_path:
+    print("error: didn't choose a file.Closing.")
+    exit()
+
+cap = cv2.VideoCapture(video_path)
 
 if not cap.isOpened():
     print("error: could not open video file.")
