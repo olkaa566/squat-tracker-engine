@@ -20,17 +20,18 @@ try:
 except Exception as e:
     print(f"warning: could not load weights: {e}\n")
 
-cap = cv2.VideoCapture("assets/mikolaj_seria.mp4")
+cap = cv2.VideoCapture("assets/ola_zle.mp4")
 
 if not cap.isOpened():
     print("error: could not open video file.")
     exit()
 
-# squat tracking variables
 rep_count = 0
 in_squat = False
 current_lowest_y = 0.0
 best_coords = [0.0, 0.0, 0.0, 0.0]
+smooth_kx, smooth_ky = 0.0, 0.0
+alpha = 0.4 #smooth strength
 
 print("processing video for numerical data...\n")
 
@@ -45,32 +46,46 @@ while cap.isOpened():
     if results[0].keypoints is not None and len(results[0].keypoints.xyn) > 0:
         if len(results[0].keypoints.xyn) > 0:
 
-            # ignore mirror
             boxes = results[0].boxes.xywh.cpu().numpy()
             all_keypoints = results[0].keypoints.xyn.cpu().numpy()
-            
+            all_confs = results[0].keypoints.conf.cpu().numpy() 
+
             best_idx = 0
             max_area = 0
             for i in range(len(boxes)):
-                area = boxes[i][2] * boxes[i][3] # szerokość * wysokość boxa
+                area = boxes[i][2] * boxes[i][3]
                 if area > max_area:
                     max_area = area
                     best_idx = i
-                    
+                
             keypoints = all_keypoints[best_idx]
-        
-        if len(keypoints) >= 15: 
-            hip_x, hip_y = keypoints[12]
-            knee_x, knee_y = keypoints[14]
+            confs = all_confs[best_idx]
+
+            if len(keypoints) >= 15: 
+            
+                left_side = confs[11] + confs[13]
+                right_side = confs[12] + confs[14]
+
+                if left_side > right_side:
+                    hip_x, hip_y = keypoints[11]
+                    knee_x, knee_y = keypoints[13]
+                else:
+                    hip_x, hip_y = keypoints[12]
+                    knee_x, knee_y = keypoints[14]
+
+                if smooth_kx == 0.0:
+                    smooth_kx, smooth_ky = knee_x, knee_y
+                else:
+                    smooth_kx = alpha * knee_x + (1 - alpha) * smooth_kx
+                    smooth_ky = alpha * knee_y + (1 - alpha) * smooth_ky
 
             if hip_y > 0 and knee_y > 0:
 
                 h, w = frame.shape[:2]
-                # Czerwona kropka na biodrze, zielona na kolanie
+
                 cv2.circle(frame, (int(hip_x * w), int(hip_y * h)), 8, (0, 0, 255), -1) 
                 cv2.circle(frame, (int(knee_x * w), int(knee_y * h)), 8, (0, 255, 0), -1)
                 
-                # Wyświetlanie statystyk w rogu
                 cv2.putText(frame, f"Reps: {rep_count}", (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 0), 2)
                 cv2.putText(frame, f"Hip Y: {hip_y:.3f}", (20, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
                 cv2.putText(frame, f"Lowest: {current_lowest_y:.3f}", (20, 140), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
