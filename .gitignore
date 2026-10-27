@@ -66,6 +66,7 @@ assets/*.jpg
 assets/*.png
 assets/*.mp4
 squat_weights.txt
+squat_dataset.csv
 
 # AI Model Weights
 *.pt
