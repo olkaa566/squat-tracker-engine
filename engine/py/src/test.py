@@ -1,38 +1,47 @@
 import sys
 import os
-sys.path.append(os.getcwd())
+import csv
+
+engine_path = r"C:\Users\ola\squat-depth-nn" 
+sys.path.append(engine_path)
+
 import cpp_engine
+csv_file = "squat_dataset.txt"
 
-def run_test():
-    print("Initializing MultiLayerPerceptron: 4 inputs -> 4 hidden -> 1 output.")
-    mlp = cpp_engine.MultiLayerPerceptron(4, 4, 1, 0.1)
+training_data = []
+target_data = []
 
-    good_inputs = cpp_engine.Matrix(1, 4, [0.5, 0.9, 0.5, 0.95])
-    good_target = cpp_engine.Matrix(1, 1, [1.0])
+try:
+    with open(csv_file, mode='r') as file:
+        reader = csv.reader(file)
 
-    bad_inputs = cpp_engine.Matrix(1, 4, [0.5, 0.6, 0.5, 0.7])
-    bad_target = cpp_engine.Matrix(1, 1, [0.0])
+        #skip header
+        next(reader) 
 
-    # Check prediction BEFORE training
-    pred_before = mlp.forward(good_inputs).get_data()[0]
-    print(f"Prediction before training: {pred_before:.4f}")
+        for row in reader:
+            if len(row) == 5:
+                inputs = cpp_engine.Matrix(1, 4, [float(row[0]), float(row[1]), float(row[2]), float(row[3])])
+                training_data.append(inputs)
 
-    # Train for 2000 epochs to allow convergence
-    for epoch in range(1, 2001):
-        mlp.train(good_inputs, good_target)
-        mlp.train(bad_inputs, bad_target)
+                #target label: 1.0 for good squat, 0.0 for bad squat
+                target = cpp_engine.Matrix(1, 1, [float(row[4])])
+                target_data.apend(target)
 
-        if epoch % 200 == 0 or epoch == 1:
-            prediction_good = mlp.forward(good_inputs).get_data()[0]
-            prediction_bad = mlp.forward(bad_inputs).get_data()[0]
+except FileNotFoundError:
+    print(f"erro: {csv_file} not found. Run extract_coordinates.py first")
+    exit()
 
-            loss = abs(1.0 - prediction_good) + abs(0.0 - prediction_bad)
-            print(f"Epoch {epoch:4d} | Total Loss: {loss:.4f} | Deep Squat Pred: {prediction_good:.4f} | Shallow Squat Pred: {prediction_bad:.4f}")
+print(f"loaded {len(training_data)} squats for training")
 
-    # save weights to file
-    print("Zapisywanie wyuczonych wag do pliku 'squat_weights.txt'...")
-    mlp.save_weights("squat_weights.txt")
-    print("Gotowe! Możesz teraz uruchomić skrypt z YOLO.")
+mlp = cpp_engine.MultiLayerPerceptron(4, 4, 1, 0.1)
 
-if __name__ == "__main__":
-    run_test()
+print(f"started training on real data")
+
+#train the network on real data
+mlp.fit(training_data, target_data, 2000)
+
+#save the weights
+weights_path = os.path.join(engine_path, "squat_weights.txt")
+mlp.save_weights(weights_path)
+
+print(f"done. Saved to {weights_path}")
