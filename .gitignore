@@ -65,6 +65,7 @@ vcpkg_installed/
 assets/*.jpg
 assets/*.png
 assets/*.mp4
+*.txt
 
 # AI Model Weights
 *.pt
