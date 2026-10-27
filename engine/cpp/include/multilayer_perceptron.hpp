@@ -1,6 +1,7 @@
 #pragma once
 //#include <vector>
 #include "matrix.hpp"
+#include <string>
 
 class MultiLayerPerceptron{
 private:
@@ -27,4 +28,7 @@ public:
     Matrix& forward(Matrix& inputs);
     void train(Matrix& inputs, Matrix& targets);
     void fit(std::vector<Matrix>& training_data, std::vector<Matrix>& target_data, int epochs);
+
+    void save_weights(const std::string& filename) const;
+    void load_weights(const std::string& filename);
 };

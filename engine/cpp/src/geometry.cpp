@@ -22,7 +22,7 @@ float calculate_knee_angle(float hip_x, float hip_y, float knee_x, float knee_y)
         cos_angle = 1.0f;
     } 
 
-    if (cos_angle < -1.0f) {
+    if (cos_angle < -1.0f){
         cos_angle = -1.0f;
     }
 
