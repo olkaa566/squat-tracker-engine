@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 project(SquatVisionEngine VERSION 1.0 LANGUAGES CXX)
 
@@ -7,15 +7,25 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include_directories(include)
 
-add_executable(engine 
-    src/main.cpp
+include(FetchContent)
+FetchContent_Declare(
+    pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11.git
+    GIT_TAG        v2.11.1
+)
+FetchContent_MakeAvailable(pybind11)
+
+
+pybind11_add_module(cpp_engine 
+    src/bindings.cpp
+    src/biomechanics.cpp
+    src/geometry.cpp
     src/matrix.cpp
-    src/vision.cpp
-    src/png_decoder.cpp
+    src/multilayer_perceptron.cpp
 )
 
 if(MSVC)
-    target_compile_options(engine PRIVATE /W4)
+    target_compile_options(cpp_engine PRIVATE /W4)
 else()
-    target_compile_options(engine PRIVATE -Wall -Wextra)
+    target_compile_options(cpp_engine PRIVATE -Wall -Wextra)
 endif()

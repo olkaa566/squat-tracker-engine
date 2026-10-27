@@ -6,7 +6,7 @@ engine_path = r"C:\Users\ola\squat-depth-nn"
 sys.path.append(engine_path)
 
 import cpp_engine
-csv_file = "squat_dataset.txt"
+csv_file = "squat_dataset.csv"
 
 training_data = []
 target_data = []
@@ -25,7 +25,7 @@ try:
 
                 #target label: 1.0 for good squat, 0.0 for bad squat
                 target = cpp_engine.Matrix(1, 1, [float(row[4])])
-                target_data.apend(target)
+                target_data.append(target)
 
 except FileNotFoundError:
     print(f"erro: {csv_file} not found. Run extract_coordinates.py first")

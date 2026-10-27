@@ -2,13 +2,14 @@ import sys
 import os
 import cv2
 from ultralytics import YOLO
-import cpp_engine
 
 engine_path = r"C:\Users\ola\squat-depth-nn" 
 sys.path.append(engine_path)
 
+import cpp_engine
+
 print("booting up yolo ai.")
-model = YOLO('yolov8n-pose.pt') 
+model = YOLO('yolov8m-pose.pt') 
 
 # initialize network
 mlp = cpp_engine.MultiLayerPerceptron(4, 4, 1, 0.1)
@@ -19,7 +20,7 @@ try:
 except Exception as e:
     print(f"warning: could not load weights: {e}\n")
 
-cap = cv2.VideoCapture("assets/test_video.mp4")
+cap = cv2.VideoCapture("assets/mikolaj_seria.mp4")
 
 if not cap.isOpened():
     print("error: could not open video file.")
@@ -42,13 +43,37 @@ while cap.isOpened():
     results = model(frame, verbose=False)
 
     if results[0].keypoints is not None and len(results[0].keypoints.xyn) > 0:
-        keypoints = results[0].keypoints.xyn.cpu().numpy()[0]
+        if len(results[0].keypoints.xyn) > 0:
+
+            # ignore mirror
+            boxes = results[0].boxes.xywh.cpu().numpy()
+            all_keypoints = results[0].keypoints.xyn.cpu().numpy()
+            
+            best_idx = 0
+            max_area = 0
+            for i in range(len(boxes)):
+                area = boxes[i][2] * boxes[i][3] # szerokość * wysokość boxa
+                if area > max_area:
+                    max_area = area
+                    best_idx = i
+                    
+            keypoints = all_keypoints[best_idx]
         
         if len(keypoints) >= 15: 
             hip_x, hip_y = keypoints[12]
             knee_x, knee_y = keypoints[14]
 
             if hip_y > 0 and knee_y > 0:
+
+                h, w = frame.shape[:2]
+                # Czerwona kropka na biodrze, zielona na kolanie
+                cv2.circle(frame, (int(hip_x * w), int(hip_y * h)), 8, (0, 0, 255), -1) 
+                cv2.circle(frame, (int(knee_x * w), int(knee_y * h)), 8, (0, 255, 0), -1)
+                
+                # Wyświetlanie statystyk w rogu
+                cv2.putText(frame, f"Reps: {rep_count}", (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 0), 2)
+                cv2.putText(frame, f"Hip Y: {hip_y:.3f}", (20, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                cv2.putText(frame, f"Lowest: {current_lowest_y:.3f}", (20, 140), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
                 
                 # state 1: standing, waiting to go down
                 if not in_squat:
@@ -82,6 +107,10 @@ while cap.isOpened():
                         # reset for next rep
                         in_squat = False
                         current_lowest_y = hip_y 
+
+    cv2.imshow("Squat Tracker AI", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 cap.release()
 print(f"finished processing. total reps found: {rep_count}")

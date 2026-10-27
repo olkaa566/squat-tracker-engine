@@ -3,7 +3,7 @@ import cv2
 import csv
 from ultralytics import YOLO
 
-model = YOLO('yolov8n-pose.pt')
+model = YOLO('yolov8m-pose.pt')
 
 # define where the videos are and their labels
 # 1.0 means perfect squat, 0.0 means too shallow

@@ -27,5 +27,6 @@ PYBIND11_MODULE(cpp_engine, m) {
         .def("forward", &MultiLayerPerceptron::forward)
         .def("train", &MultiLayerPerceptron::train)
         .def("save_weights", &MultiLayerPerceptron::save_weights)
+        .def("fit", &MultiLayerPerceptron::fit)
         .def("load_weights", &MultiLayerPerceptron::load_weights); 
 }
